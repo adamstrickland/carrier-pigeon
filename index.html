@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>carrier pigeon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Gochi+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #3b1f2b;
+    --paint: #ff5d3a;
+    --cream: #fff4dc;
+    --pigeon: clamp(96px, 24vw, 180px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+    color: var(--ink);
+    font-family: "Gochi Hand", "Comic Sans MS", cursive;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .28) 1.5px, transparent 2px) 0 0 / 22px 22px,
+      radial-gradient(ellipse at 50% 115%, #ffd36e 0%, transparent 55%),
+      linear-gradient(170deg, #ff9a6b 0%, #ffb37a 35%, #ffcf8a 70%, #ffe2a3 100%);
+    background-color: #ffb37a;
+  }
+
+  .stage {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: calc(var(--pigeon) * 1.6) 16px 48px;
+  }
+
+  .perch { position: relative; }
+
+  h1 {
+    margin: 0;
+    font-family: "Rubik Wet Paint", "Impact", sans-serif;
+    font-weight: 400;
+    font-size: clamp(3.2rem, 17vw, 9rem);
+    line-height: .95;
+    text-align: center;
+    color: var(--paint);
+    text-shadow: 3px 3px 0 var(--ink), 6px 6px 0 rgba(59, 31, 43, .25);
+    letter-spacing: .02em;
+  }
+  h1 span { display: block; }
+  h1 span + span { color: #7b3fa8; }
+
+  .spot {
+    position: absolute;
+    right: 2%;
+    bottom: calc(100% - 14px);
+    width: var(--pigeon);
+  }
+
+  .flyer { will-change: transform; }
+
+  .pigeon {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    transform-origin: 50% 100%;
+  }
+
+  .wing { transform-box: view-box; transform-origin: 112px 84px; }
+  .wing-far { transform-origin: 104px 80px; opacity: 0; }
+  .head { transform-box: view-box; transform-origin: 140px 78px; }
+
+  [data-phase="flying"] .wing { animation: flap .16s ease-in-out infinite alternate; }
+  [data-phase="flying"] .wing-far { opacity: 1; animation: flap-far .16s ease-in-out infinite alternate; }
+  [data-phase="flying"] .feet { transform: translateY(-6px) rotate(-18deg); transform-box: fill-box; transform-origin: 50% 0; }
+  [data-phase="landed"] .wing { animation: fold .45s cubic-bezier(.3, 1.6, .5, 1) both; }
+  [data-phase="talking"] .head { animation: bob 1.6s ease-in-out infinite; }
+
+  @keyframes flap {
+    from { transform: rotate(-62deg); }
+    to   { transform: rotate(22deg); }
+  }
+  @keyframes flap-far {
+    from { transform: rotate(-48deg); }
+    to   { transform: rotate(14deg); }
+  }
+  @keyframes fold {
+    from { transform: rotate(-55deg); }
+    to   { transform: rotate(0); }
+  }
+  @keyframes bob {
+    0%, 100% { transform: rotate(0); }
+    30% { transform: rotate(-7deg) translateY(-2px); }
+    60% { transform: rotate(4deg); }
+  }
+
+  .bubble {
+    position: absolute;
+    right: 78%;
+    bottom: 72%;
+    width: max-content;
+    max-width: min(62vw, 260px);
+    padding: .7em 1em .85em;
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 22px 22px 6px 22px;
+    box-shadow: 5px 5px 0 var(--ink);
+    font-size: clamp(1.15rem, 4.6vw, 1.6rem);
+    line-height: 1.1;
+    text-align: center;
+    transform-origin: 100% 100%;
+    visibility: hidden;
+  }
+  .bubble::after {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 8px;
+    width: 18px;
+    height: 18px;
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-left: 0;
+    border-top: 0;
+    transform: skewX(40deg) rotate(-20deg);
+  }
+  .bubble p { margin: 0 0 .45em; }
+  [data-phase="talking"] .bubble {
+    visibility: visible;
+    animation: pop .4s cubic-bezier(.2, 1.8, .5, 1) both;
+  }
+  @keyframes pop {
+    from { transform: scale(0) rotate(-12deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  .gimme, .close {
+    font: inherit;
+    cursor: pointer;
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .gimme {
+    padding: .2em .9em .3em;
+    border-radius: 999px;
+    background: #ffd23f;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .gimme:hover { transform: rotate(-3deg) scale(1.06); }
+  .gimme:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+  .gimme:focus-visible, .close:focus-visible { outline: 3px dashed #7b3fa8; outline-offset: 3px; }
+
+  dialog {
+    padding: 0;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    background: var(--cream);
+    box-shadow: 8px 8px 0 var(--ink);
+    max-width: calc(100vw - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow: visible;
+  }
+  dialog::backdrop {
+    background: rgba(59, 31, 43, .55);
+    backdrop-filter: blur(2px);
+  }
+  .letter { padding: 44px 14px 14px; position: relative; }
+  .letter img {
+    display: block;
+    max-width: min(1428px, calc(100vw - 70px));
+    max-height: calc(100dvh - 130px);
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+  }
+  .letter h2 {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+  .close {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--paint);
+    color: var(--cream);
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="stage" data-phase="flying">
+  <div class="perch">
+    <div class="spot">
+      <div class="bubble" role="status">
+        <p>message for you!</p>
+        <button class="gimme" type="button">gimme</button>
+      </div>
+      <div class="flyer">
+        <svg class="pigeon" viewBox="0 0 200 170" role="img" aria-label="a cartoon pigeon">
+          <defs>
+            <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#3fd08a"/>
+              <stop offset=".5" stop-color="#2aa6a0"/>
+              <stop offset="1" stop-color="#8a4fc8"/>
+            </linearGradient>
+          </defs>
+          <g class="wing wing-far">
+            <path d="M104 80 C 80 60, 40 58, 22 72 C 45 78, 70 92, 104 98 Z" fill="#6f7886"/>
+          </g>
+          <path d="M44 104 L 8 92 L 10 112 L 4 124 L 44 120 Z" fill="#5d6573"/>
+          <path d="M14 96 L 12 120" stroke="#2d3038" stroke-width="5"/>
+          <g class="feet" stroke="#ff8a2a" stroke-width="5" stroke-linecap="round" fill="none">
+            <path d="M84 132 L 82 156 M 82 156 L 72 162 M 82 156 L 84 164 M 82 156 L 93 161"/>
+            <path d="M108 132 L 108 156 M 108 156 L 98 162 M 108 156 L 110 164 M 108 156 L 119 161"/>
+          </g>
+          <ellipse cx="96" cy="104" rx="60" ry="38" fill="#9aa3b1"/>
+          <ellipse cx="108" cy="116" rx="40" ry="22" fill="#b8bfcb"/>
+          <g class="head">
+            <path d="M118 74 C 122 58, 134 50, 146 52 C 160 70, 160 96, 146 110 C 132 108, 116 98, 118 74 Z" fill="url(#sheen)"/>
+            <circle cx="150" cy="46" r="25" fill="#8f98a7"/>
+            <circle cx="141" cy="56" r="6" fill="#ff9fb0" opacity=".7"/>
+            <path d="M172 42 L 190 49 L 172 54 Z" fill="#3a3a40"/>
+            <ellipse cx="173" cy="43" rx="5" ry="3" fill="#f2efe8"/>
+            <circle cx="158" cy="40" r="7.5" fill="#ff8a1f"/>
+            <circle cx="159" cy="40" r="4" fill="#111"/>
+            <circle cx="160.5" cy="38.4" r="1.4" fill="#fff"/>
+          </g>
+          <g class="wing">
+            <path d="M112 84 C 96 74, 58 76, 36 98 C 60 112, 96 116, 128 106 C 130 96, 124 88, 112 84 Z" fill="#7d8695"/>
+            <path d="M60 94 C 76 92, 92 94, 106 100" stroke="#2d3038" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M54 102 C 72 102, 90 104, 104 108" stroke="#2d3038" stroke-width="5" fill="none" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <h1><span>carrier</span><span>pigeon</span></h1>
+  </div>
+</main>
+
+<dialog class="letter-dialog" aria-labelledby="letter-title">
+  <div class="letter">
+    <h2 id="letter-title">special delivery</h2>
+    <form method="dialog"><button class="close" aria-label="close">&times;</button></form>
+    <img src="message.png" width="1428" height="356" alt="Dashboard error: Could not load this alarm (HTTP 502)">
+  </div>
+</dialog>
+
+<script>
+  const stage = document.querySelector(".stage");
+  const flyer = stage.querySelector(".flyer");
+  const pigeon = stage.querySelector(".pigeon");
+  const wing = stage.querySelector(".wing:not(.wing-far)");
+  const dialog = document.querySelector("dialog");
+
+  let phase = stage.dataset.phase;
+  function setPhase(next) {
+    phase = next;
+    stage.dataset.phase = next;
+  }
+
+  function animationEnded(el, name) {
+    return new Promise((resolve) => {
+      el.addEventListener("animationend", function onEnd(e) {
+        if (e.animationName !== name) return;
+        el.removeEventListener("animationend", onEnd);
+        resolve();
+      });
+    });
+  }
+
+  const flightPath = [
+    { transform: "translate(-110vw, -35vh) rotate(-8deg)" },
+    { transform: "translate(-70vw, -55vh) rotate(-4deg)", offset: .3 },
+    { transform: "translate(-30vw, -30vh) rotate(6deg)", offset: .65 },
+    { transform: "translate(-6vw, -8vh) rotate(10deg)", offset: .88 },
+    { transform: "translate(0, 0) rotate(0)" },
+  ];
+
+  const squash = [
+    { transform: "scale(1, 1)" },
+    { transform: "scale(1.18, .78)", offset: .3 },
+    { transform: "scale(.94, 1.08)", offset: .65 },
+    { transform: "scale(1, 1)" },
+  ];
+
+  async function arrive() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPhase("talking");
+      return;
+    }
+    await flyer.animate(flightPath, { duration: 2200, easing: "cubic-bezier(.3, .1, .3, 1)", fill: "backwards" }).finished;
+    setPhase("landing");
+    await pigeon.animate(squash, { duration: 420, easing: "ease-out" }).finished;
+    const folded = animationEnded(wing, "fold");
+    setPhase("landed");
+    await folded;
+    setPhase("talking");
+  }
+
+  stage.querySelector(".gimme").addEventListener("click", () => dialog.showModal());
+
+  // With padding on .letter, a click whose target is the dialog itself can only be on the backdrop.
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+
+  arrive();
+</script>
+</body>
+</html>
