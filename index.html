@@ -6,10 +6,10 @@
 <title>carrier pigeon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Gochi+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Gochi+Hand&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #3b1f2b;
+    --ink: #1d1d1f;
     --paint: #ff5d3a;
     --cream: #fff4dc;
     --pigeon: clamp(96px, 24vw, 180px);
@@ -22,11 +22,7 @@
     overflow-x: clip;
     color: var(--ink);
     font-family: "Gochi Hand", "Comic Sans MS", cursive;
-    background:
-      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .28) 1.5px, transparent 2px) 0 0 / 22px 22px,
-      radial-gradient(ellipse at 50% 115%, #ffd36e 0%, transparent 55%),
-      linear-gradient(170deg, #ff9a6b 0%, #ffb37a 35%, #ffcf8a 70%, #ffe2a3 100%);
-    background-color: #ffb37a;
+    background: #bfe3f2;
   }
 
   .stage {
@@ -41,17 +37,18 @@
 
   h1 {
     margin: 0;
-    font-family: "Rubik Wet Paint", "Impact", sans-serif;
+    font-family: "Caveat Brush", "Comic Sans MS", cursive;
     font-weight: 400;
-    font-size: clamp(3.2rem, 17vw, 9rem);
+    font-size: clamp(4rem, 24vw, 12rem);
     line-height: .95;
     text-align: center;
-    color: var(--paint);
-    text-shadow: 3px 3px 0 var(--ink), 6px 6px 0 rgba(59, 31, 43, .25);
-    letter-spacing: .02em;
+    color: var(--ink);
+    letter-spacing: .03em;
   }
-  h1 span { display: block; }
-  h1 span + span { color: #7b3fa8; }
+  h1 > span { display: block; }
+  h1 i { display: inline-block; font-style: normal; }
+  h1 i:nth-child(odd) { transform: rotate(-4deg) translateY(.03em); }
+  h1 i:nth-child(3n) { transform: rotate(5deg) translateY(-.04em); }
 
   .spot {
     position: absolute;
@@ -153,7 +150,7 @@
   }
   .gimme:hover { transform: rotate(-3deg) scale(1.06); }
   .gimme:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
-  .gimme:focus-visible, .close:focus-visible { outline: 3px dashed #7b3fa8; outline-offset: 3px; }
+  .gimme:focus-visible, .close:focus-visible { outline: 3px dashed var(--ink); outline-offset: 3px; }
 
   dialog {
     padding: 0;
@@ -166,7 +163,7 @@
     overflow: visible;
   }
   dialog::backdrop {
-    background: rgba(59, 31, 43, .55);
+    background: rgba(29, 29, 31, .55);
     backdrop-filter: blur(2px);
   }
   .letter { padding: 44px 14px 14px; position: relative; }
@@ -250,7 +247,7 @@
         </svg>
       </div>
     </div>
-    <h1><span>carrier</span><span>pigeon</span></h1>
+    <h1 aria-label="carrier pigeon"><span aria-hidden="true"><i>c</i><i>a</i><i>r</i><i>r</i><i>i</i><i>e</i><i>r</i></span><span aria-hidden="true"><i>p</i><i>i</i><i>g</i><i>e</i><i>o</i><i>n</i></span></h1>
   </div>
 </main>
 
